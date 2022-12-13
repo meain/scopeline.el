@@ -29,3 +29,6 @@ Here is a sample `use-package' configuration:
 - `context-targets`: Update this alist which maps `major-mode` to list
   of tree-sitter entries to control what all blocks get context
   overlays
+
+
+*Thanks to [haringsrob/nvim_context_vt](https://github.com/haringsrob/nvim_context_vt) for the idea.*
