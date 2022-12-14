@@ -75,7 +75,10 @@
                       (line-difference (- end-line start-line)))
                  (if (> line-difference context-min-lines)
                      (context--add-overlay
-                      (cdr pos)
+                      (save-excursion
+                        (goto-char (cl-callf byte-to-position (cdr pos)))
+                        (end-of-line)
+                        (point))
                       (save-excursion
                         (goto-char (cl-callf byte-to-position (car pos)))
                         (s-trim (thing-at-point 'line)))))))
