@@ -27,14 +27,17 @@
 
 ;;; Code:
 
-(defvar context--overlays '())
-(defvar context-overlay-prefix "  # ")
+(defvar context--overlays '() "List to keep overlays applies in buffer.")
+(defvar context-overlay-prefix "  # " "Prefix to use for overlay.")
+(defvar context-min-lines 5 "Minimum number of lines for block before we show context info.")
 (defface context-face
   '((default :inherit font-lock-comment-face))
   "Face for showing context info.")
 (defvar context-targets ;; TODO: Add more language modes
   '((go-mode . ("function_declaration" "func_literal" "if_statement" "for_statement"))
-    (rust-mode . ("function_item" "for_expression" "if_expression"))))
+    (python-mode . ("function_definition" "if_statement" "for_statement"))
+    (rust-mode . ("function_item" "for_expression" "if_expression")))
+  "Tree-sitter entities for context target.")
 
 (defun context--add-overlay (pos text)
   "Add overlay at `POS' with the specified `TEXT'."
@@ -64,15 +67,21 @@
               (query (tsc-make-query tree-sitter-language query-s))
               (root-node (tsc-root-node tree-sitter-tree))
               (matches (tsc-query-matches query root-node #'tsc--buffer-substring-no-properties)))
-    (seq-map (lambda (x)
+    (seq-map (lambda (x) ; TODO: seq-map might not be the best option here
                (let* ((entity (seq-elt (cdr x) 0))
-                      (pos (tsc-node-byte-range (cdr entity))))
-                 (context--add-overlay
-                  (cdr pos)
-                  (save-excursion
-                    (goto-char (cl-callf byte-to-position (car pos)))
-                    (s-trim (thing-at-point 'line))))))
-             matches)))
+                      (pos (tsc-node-byte-range (cdr entity)))
+                      (start-line (line-number-at-pos (car pos)))
+                      (end-line (line-number-at-pos (cdr pos)))
+                      (line-difference (- end-line start-line)))
+                 (if (> line-difference context-min-lines)
+                     (context--add-overlay
+                      (cdr pos)
+                      (save-excursion
+                        (goto-char (cl-callf byte-to-position (car pos)))
+                        (s-trim (thing-at-point 'line)))))))
+             ;; Reversing the matches here so that it shows up in
+             ;; correct order for indent based languages like python
+             (reverse matches))))
 
 (defun context--redisplay (&rest _)
   "Re-display all the context entries."
