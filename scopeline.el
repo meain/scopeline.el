@@ -1,68 +1,68 @@
-;;; context.el --- Show context info of blocks in buffer -*- lexical-binding: t; -*-
+;;; scopeline.el --- Show scope info of blocks in buffer at end of scope -*- lexical-binding: t; -*-
 
-;; URL: https://github.com/meain/context.el
-;; Keywords: context, tree-sitter, convenience
+;; URL: https://github.com/meain/scopeline.el
+;; Keywords: scope, context, tree-sitter, convenience
 ;; SPDX-License-Identifier: Apache-2.0
 ;; Package-Requires: ((emacs "25.1") (tree-sitter "0.15.0"))
 ;; Version: 0.1
 
 ;;; Commentary:
-;; This package lets you show the context of blocks like function
+;; This package lets you show the scope info of blocks like function
 ;; definitions, loops, conditions etc.  It does this by adding the
 ;; first line of these blocks at the end of the last char of that
 ;; block.  It makes use of `tree-sitter' to figure out block start and
 ;; end.
 ;;
-;; The package exposes a single minor mode `context-mode' which you
+;; The package exposes a single minor mode `scopeline-mode' which you
 ;; can use to enable or disable the functionality.
 ;;
 ;; Here is a sample `use-package' configuration
 ;;
-;; (use-package context
+;; (use-package scopeline
 ;;   :after tree-sitter
-;;   :config (add-hook 'tree-sitter-mode-hook #'context-mode))
+;;   :config (add-hook 'tree-sitter-mode-hook #'scopeline-mode))
 ;;
 ;; You can find more info in the README for the project at
-;; https://github.com/meain/context.el
+;; https://github.com/meain/scopeline.el
 
 ;;; Code:
 
-(defvar context--overlays '() "List to keep overlays applies in buffer.")
-(defvar context-overlay-prefix "  # " "Prefix to use for overlay.")
-(defvar context-min-lines 5 "Minimum number of lines for block before we show context info.")
-(defface context-face
+(defvar scopeline--overlays '() "List to keep overlays applies in buffer.")
+(defvar scopeline-overlay-prefix "  # " "Prefix to use for overlay.")
+(defvar scopeline-min-lines 5 "Minimum number of lines for block before we show scope info.")
+(defface scopeline-face
   '((default :inherit font-lock-comment-face))
-  "Face for showing context info.")
-(defvar context-targets ;; TODO: Add more language modes
-  '((go-mode . ("function_declaration" "func_literal" "if_statement" "for_statement"))
+  "Face for showing scope info.")
+(defvar scopeline-targets ;; TODO: Add more language modes
+  '((go-mode . ("function_declaration" "func_literal" "method_declaration" "if_statement" "for_statement"))
     (python-mode . ("function_definition" "if_statement" "for_statement"))
     (rust-mode . ("function_item" "for_expression" "if_expression")))
-  "Tree-sitter entities for context target.")
+  "Tree-sitter entities for scopeline target.")
 
-(defun context--add-overlay (pos text)
+(defun scopeline--add-overlay (pos text)
   "Add overlay at `POS' with the specified `TEXT'."
   (let ((ov (make-overlay pos pos)))
     (overlay-put ov 'after-string
-                 (propertize (format "%s%s" context-overlay-prefix text)
-                             'face 'context-face))
+                 (propertize (format "%s%s" scopeline-overlay-prefix text)
+                             'face 'scopeline-face))
     ;; FIXME: If we have overlays at the same point, it does not get
     ;; added multiple times to the list but does get shown multiple
     ;; times in the buffer
-    (add-to-list 'context--overlays ov)))
+    (add-to-list 'scopeline--overlays ov)))
 
-(defun context--delete-all-overlays ()
-  "Delete all context related overlays."
-  (dolist (ov context--overlays)
+(defun scopeline--delete-all-overlays ()
+  "Delete all scopeline related overlays."
+  (dolist (ov scopeline--overlays)
     (delete-overlay ov))
-  (setq context--overlays '()))
+  (setq scopeline--overlays '()))
 
-(defun context--show ()
-  "Show all the context items in buffer."
-  (when-let* ((context-targets-for-mode (cdr (assq major-mode context-targets)))
+(defun scopeline--show ()
+  "Show all the scopeline items in buffer."
+  (when-let* ((scopeline-targets-for-mode (cdr (assq major-mode scopeline-targets)))
               (query-s (string-join
                         (seq-map (lambda (ct)
                                    (format "(%s) @entity" ct))
-                                 context-targets-for-mode)
+                                 scopeline-targets-for-mode)
                         "\n"))
               (query (tsc-make-query tree-sitter-language query-s))
               (root-node (tsc-root-node tree-sitter-tree))
@@ -73,8 +73,8 @@
                       (start-line (line-number-at-pos (car pos)))
                       (end-line (line-number-at-pos (cdr pos)))
                       (line-difference (- end-line start-line)))
-                 (if (> line-difference context-min-lines)
-                     (context--add-overlay
+                 (if (> line-difference scopeline-min-lines)
+                     (scopeline--add-overlay
                       (save-excursion
                         (goto-char (cl-callf byte-to-position (cdr pos)))
                         (end-of-line)
@@ -86,22 +86,22 @@
              ;; correct order for indent based languages like python
              (reverse matches))))
 
-(defun context--redisplay (&rest _)
-  "Re-display all the context entries."
-  (if context-mode
+(defun scopeline--redisplay (&rest _)
+  "Re-display all the scopeline entries."
+  (if scopeline-mode
       (progn
-        (context--delete-all-overlays)
-        (context--show))))
+        (scopeline--delete-all-overlays)
+        (scopeline--show))))
 
-(define-minor-mode context-mode
-  "Show context of first line on last line."
-  :lighter " context"
+(define-minor-mode scopeline-mode
+  "Show scopeline of first line on last line."
+  :lighter " scopeline"
   ;; FIXME: Don't always remove. This is done so as to not add the
   ;; command to hook multiple times
-  (remove-hook 'post-command-hook #'context--redisplay)
-  (if context-mode
-      (add-hook 'post-command-hook #'context--redisplay t)
-    (context--delete-all-overlays)))
+  (remove-hook 'post-command-hook #'scopeline--redisplay)
+  (if scopeline-mode
+      (add-hook 'post-command-hook #'scopeline--redisplay t)
+    (scopeline--delete-all-overlays)))
 
-(provide 'context)
-;;; context.el ends here
+(provide 'scopeline)
+;;; scopeline.el ends here
