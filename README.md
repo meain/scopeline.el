@@ -1,11 +1,13 @@
 # scopeline.el
 
-![Screenshot of Emacs frame with scopeline.el enabled](https://user-images.githubusercontent.com/14259816/207393093-bef655ad-172c-48b3-aca5-cf20ee3a5894.png)
+![Screenshot of Emacs frame with scopeline.el enabled](https://user-images.githubusercontent.com/14259816/208631769-052ac0ab-44df-4949-8f2f-3ef43e249f65.png)
 
 This package lets you show the scope info of blocks like function
 definitions, loops, conditions etc. It does this by adding the first
-line of these blocks at the end of the last char of that block. It
-makes use of `tree-sitter' to figure out block start and end.
+line of these blocks at the end of the last char of that block. In the
+screenshot you can see the light grey things after the closing
+brackets `}`. It makes use of `tree-sitter' to figure out block start
+and end.
 
 The package exposes a single minor mode `scopeline-mode' which you
 can use to enable or disable the functionality.
