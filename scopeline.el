@@ -34,9 +34,26 @@
   '((default :inherit font-lock-comment-face))
   "Face for showing scope info.")
 (defvar scopeline-targets ;; TODO: Add more language modes
-  '((go-mode . ("function_declaration" "func_literal" "method_declaration" "if_statement" "for_statement"))
+  '(
+    ;; TODO: Should this be more complex queries (for example gets
+    ;; name of func for func) as it might look weird if only the
+    ;; return type is on the first line in case of c-mode entries
+    (c-mode . ("function_definition" "for_statement" "if_statement" "while_statement"))
+    (css-mode . ("rule_set"))
+    (go-mode . ("function_declaration" "func_literal" "method_declaration" "if_statement" "for_statement"))
+    (html-mode . ("element"))
+    (javascript-mode . ("function" "function_declaration" "if_statement" "for_statement" "while_statement"))
+    (js-mode . ("function" "function_declaration" "if_statement" "for_statement" "while_statement"))
+    (js2-mode . ("function" "function_declaration" "if_statement" "for_statement" "while_statement"))
+    (js3-mode . ("function" "function_declaration" "if_statement" "for_statement" "while_statement"))
+    (json-mode . ("pair"))
+    (mhtml-mode . ("element"))
+    (nix-mode . ("bind"))
     (python-mode . ("function_definition" "if_statement" "for_statement"))
-    (rust-mode . ("function_item" "for_expression" "if_expression")))
+    (rust-mode . ("function_item" "for_expression" "if_expression"))
+    (sh-mode . ("function_definition" "if_statement" "while_statement" "for_statement" "case_statement"))
+    (yaml-mode . ("block_node" "block_mapping_pair"))
+    )
   "Tree-sitter entities for scopeline target.")
 
 (defun scopeline--add-overlay (pos text)
