@@ -23,7 +23,7 @@ Here is a sample `use-package' configuration:
 ## Configuration
 
 - `scopeline-overlay-prefix`: Change this to another string to change
-  the prefix. Defaults to <code>&nbsp;&nbsp;#&nbsp;</code>.
+  the prefix. Defaults to <code>&nbsp;&nbsp;¤&nbsp;</code>.
 - `scopeline-face`: This is the face applied for the scopeline
   overlay, change this to change how it appears. Defaults to whatever
   comments are highlighted with.

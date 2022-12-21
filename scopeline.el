@@ -28,7 +28,7 @@
 ;;; Code:
 
 (defvar scopeline--overlays '() "List to keep overlays applies in buffer.")
-(defvar scopeline-overlay-prefix "  # " "Prefix to use for overlay.")
+(defvar scopeline-overlay-prefix "  ¤ " "Prefix to use for overlay.")
 (defvar scopeline-min-lines 5 "Minimum number of lines for block before we show scope info.")
 (defface scopeline-face
   '((default :inherit font-lock-comment-face))
