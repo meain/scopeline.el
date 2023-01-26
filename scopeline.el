@@ -40,7 +40,7 @@
     ;; return type is on the first line in case of c-mode entries
     (c-mode . ("function_definition" "for_statement" "if_statement" "while_statement"))
     (css-mode . ("rule_set"))
-    (go-mode . ("function_declaration" "func_literal" "method_declaration" "if_statement" "for_statement"))
+    (go-mode . ("function_declaration" "func_literal" "method_declaration" "if_statement" "for_statement" "type_declaration"))
     (html-mode . ("element"))
     (javascript-mode . ("function" "function_declaration" "if_statement" "for_statement" "while_statement"))
     (js-mode . ("function" "function_declaration" "if_statement" "for_statement" "while_statement"))
@@ -52,7 +52,9 @@
     (python-mode . ("function_definition" "if_statement" "for_statement"))
     (rust-mode . ("function_item" "for_expression" "if_expression"))
     (sh-mode . ("function_definition" "if_statement" "while_statement" "for_statement" "case_statement"))
-    (yaml-mode . ("block_node" "block_mapping_pair"))
+    ;; FIXME: yaml has issues when we delete huge chunks of text. It
+    ;; somehow retains a lot of stray overlays
+    ;; (yaml-mode . ("block_node" "block_mapping_pair"))
     )
   "Tree-sitter entities for scopeline target.")
 
