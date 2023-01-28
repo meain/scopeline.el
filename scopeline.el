@@ -99,7 +99,7 @@
                         (point))
                       (save-excursion
                         (goto-char (cl-callf byte-to-position (car pos)))
-                        (s-trim (thing-at-point 'line)))))))
+                        (string-trim (thing-at-point 'line)))))))
              ;; Reversing the matches here so that it shows up in
              ;; correct order for indent based languages like python
              (reverse matches))))
