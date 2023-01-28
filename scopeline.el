@@ -111,6 +111,7 @@
         (scopeline--delete-all-overlays)
         (scopeline--show))))
 
+;;;###autoload
 (define-minor-mode scopeline-mode
   "Show scopeline of first line on last line."
   :lighter " scopeline"
