@@ -86,17 +86,19 @@
     (seq-map (lambda (x) ; TODO: seq-map might not be the best option here
                (let* ((entity (seq-elt (cdr x) 0))
                       (pos (tsc-node-byte-range (cdr entity)))
-                      (start-line (line-number-at-pos (car pos)))
-                      (end-line (line-number-at-pos (cdr pos)))
+                      (start-pos (cl-callf byte-to-position (car pos)))
+                      (end-pos (cl-callf byte-to-position (cdr pos)))
+                      (start-line (line-number-at-pos start-pos))
+                      (end-line (line-number-at-pos end-pos))
                       (line-difference (- end-line start-line)))
                  (if (> line-difference scopeline-min-lines)
                      (scopeline--add-overlay
                       (save-excursion
-                        (goto-char (cl-callf byte-to-position (cdr pos)))
+                        (goto-char end-pos)
                         (end-of-line)
                         (point))
                       (save-excursion
-                        (goto-char (cl-callf byte-to-position (car pos)))
+                        (goto-char start-pos)
                         (string-trim (thing-at-point 'line)))))))
              ;; Reversing the matches here so that it shows up in
              ;; correct order for indent based languages like python
