@@ -52,8 +52,6 @@
     (python-mode . ("function_definition" "if_statement" "for_statement"))
     (rust-mode . ("function_item" "for_expression" "if_expression"))
     (sh-mode . ("function_definition" "if_statement" "while_statement" "for_statement" "case_statement"))
-    ;; FIXME: yaml has issues when we delete huge chunks of text. It
-    ;; somehow retains a lot of stray overlays
     ;; (yaml-mode . ("block_node" "block_mapping_pair"))
     )
   "Tree-sitter entities for scopeline target.")
@@ -64,6 +62,7 @@
     (overlay-put ov 'after-string
                  (propertize (format "%s%s" scopeline-overlay-prefix text)
                              'face 'scopeline-face))
+    (overlay-put ov 'evaporate t)
     ;; FIXME: If we have overlays at the same point, it does not get
     ;; added multiple times to the list but does get shown multiple
     ;; times in the buffer
