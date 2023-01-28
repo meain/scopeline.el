@@ -52,7 +52,7 @@
     (python-mode . ("function_definition" "if_statement" "for_statement"))
     (rust-mode . ("function_item" "for_expression" "if_expression"))
     (sh-mode . ("function_definition" "if_statement" "while_statement" "for_statement" "case_statement"))
-    ;; (yaml-mode . ("block_node" "block_mapping_pair"))
+    (yaml-mode . ("block_mapping_pair"))
     )
   "Tree-sitter entities for scopeline target.")
 
