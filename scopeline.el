@@ -27,6 +27,7 @@
 
 ;;; Code:
 (require 'subr-x)
+(require 'tree-sitter)
 
 (defgroup scopeline nil
   "Show info about the block at the end of the block."
