@@ -26,13 +26,19 @@
 ;; https://github.com/meain/scopeline.el
 
 ;;; Code:
+(require 'subr-x)
+
+(defgroup scopeline nil
+  "Show info about the block at the end of the block."
+  :group 'tools)
 
 (defvar scopeline--overlays '() "List to keep overlays applies in buffer.")
 (defvar scopeline-overlay-prefix "  ¤ " "Prefix to use for overlay.")
 (defvar scopeline-min-lines 5 "Minimum number of lines for block before we show scope info.")
 (defface scopeline-face
   '((default :inherit font-lock-comment-face))
-  "Face for showing scope info.")
+  "Face for showing scope info."
+  :group 'blamer)
 (defvar scopeline-targets ;; TODO: Add more language modes
   '(
     ;; TODO: Should this be more complex queries (for example gets
@@ -86,8 +92,8 @@
     (seq-map (lambda (x) ; TODO: seq-map might not be the best option here
                (let* ((entity (seq-elt (cdr x) 0))
                       (pos (tsc-node-byte-range (cdr entity)))
-                      (start-pos (cl-callf byte-to-position (car pos)))
-                      (end-pos (cl-callf byte-to-position (cdr pos)))
+                      (start-pos (byte-to-position (car pos)))
+                      (end-pos (byte-to-position (cdr pos)))
                       (start-line (line-number-at-pos start-pos))
                       (end-line (line-number-at-pos end-pos))
                       (line-difference (- end-line start-line)))
@@ -104,13 +110,6 @@
              ;; correct order for indent based languages like python
              (reverse matches))))
 
-(defun scopeline--redisplay (&rest _)
-  "Re-display all the scopeline entries."
-  (if scopeline-mode
-      (progn
-        (scopeline--delete-all-overlays)
-        (scopeline--show))))
-
 ;;;###autoload
 (define-minor-mode scopeline-mode
   "Show scopeline of first line on last line."
@@ -121,6 +120,13 @@
   (if scopeline-mode
       (add-hook 'post-command-hook #'scopeline--redisplay t)
     (scopeline--delete-all-overlays)))
+
+(defun scopeline--redisplay (&rest _)
+  "Re-display all the scopeline entries."
+  (if scopeline-mode
+      (progn
+        (scopeline--delete-all-overlays)
+        (scopeline--show))))
 
 (provide 'scopeline)
 ;;; scopeline.el ends here
