@@ -115,19 +115,19 @@
 (define-minor-mode scopeline-mode
   "Show scopeline of first line on last line."
   :lighter " scopeline"
-  ;; FIXME: Don't always remove. This is done so as to not add the
-  ;; command to hook multiple times
-  (remove-hook 'post-command-hook #'scopeline--redisplay)
   (if scopeline-mode
-      (add-hook 'post-command-hook #'scopeline--redisplay t)
-    (scopeline--delete-all-overlays)))
+      (progn
+        (add-hook 'tree-sitter-after-first-parse-hook #'scopeline--redisplay nil t)
+        ;; `:append' to make sure this comes after `tree-sitter--after-change'
+        (add-hook 'after-change-functions #'scopeline--redisplay :append t))
+    (progn
+      (remove-hook 'after-change-functions #'scopeline--redisplay t)
+      (scopeline--delete-all-overlays))))
 
 (defun scopeline--redisplay (&rest _)
   "Re-display all the scopeline entries."
-  (if scopeline-mode
-      (progn
-        (scopeline--delete-all-overlays)
-        (scopeline--show))))
+  (scopeline--delete-all-overlays)
+  (scopeline--show))
 
 (provide 'scopeline)
 ;;; scopeline.el ends here
