@@ -118,10 +118,9 @@
   (if scopeline-mode
       (progn
         (add-hook 'tree-sitter-after-first-parse-hook #'scopeline--redisplay nil t)
-        ;; `:append' to make sure this comes after `tree-sitter--after-change'
-        (add-hook 'after-change-functions #'scopeline--redisplay :append t))
+        (add-hook 'tree-sitter-after-change-functions #'scopeline--redisplay nil t))
     (progn
-      (remove-hook 'after-change-functions #'scopeline--redisplay t)
+      (remove-hook 'tree-sitter-after-change-functions #'scopeline--redisplay t)
       (scopeline--delete-all-overlays))))
 
 (defun scopeline--redisplay (&rest _)
