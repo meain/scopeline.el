@@ -6,19 +6,25 @@ This package lets you show the scope info of blocks like function
 definitions, loops, conditions etc. It does this by adding the first
 line of these blocks at the end of the last char of that block. In the
 screenshot you can see the light grey things after the closing
-brackets `}`. It makes use of `tree-sitter' to figure out block start
-and end.
+brackets `}`. It makes use of `tree-sitter` to figure out block start
+and end of items. It has support for `elisp-tree-sitter` as well as builtin
+`treesit` package. As long as you have one or the other, it should
+work.
 
-The package exposes a single minor mode `scopeline-mode' which you
+The package exposes a single minor mode `scopeline-mode` which you
 can use to enable or disable the functionality.
 
-Here is a sample `use-package' configuration:
+To enable scopeline, you just have to call `scopeline-mode`.
+
+Here is a sample `use-package` configuration to use it with `elisp-tree-sitter`:
 
 ```emacs-lisp
 (use-package scopeline
   :after tree-sitter
   :config (add-hook 'tree-sitter-mode-hook #'scopeline-mode))
 ```
+
+When using with `treesit`, you can hook onto language specific modes.
 
 ## Configuration
 
@@ -34,5 +40,4 @@ Here is a sample `use-package' configuration:
   showing scopeline information. Default is set to 5. Set it to 0 to
   always show.
 
-
-*Thanks to [haringsrob/nvim_context_vt](https://github.com/haringsrob/nvim_context_vt) for the idea.*
+_Thanks to [haringsrob/nvim_context_vt](https://github.com/haringsrob/nvim_context_vt) for the idea._
