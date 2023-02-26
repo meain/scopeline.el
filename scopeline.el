@@ -27,7 +27,12 @@
 
 ;;; Code:
 (require 'subr-x)
-(require 'tree-sitter)
+(defvar scopeline--can-use-elisp-treesitter
+  (require 'tree-sitter nil t)
+  "If non-nil, we are can make use of elisp-treesitter instead of builtin.")
+(defvar scopeline--can-use-builtin-treesit
+  (require 'treesit nil t)
+  "If non-nil, we are can make use of elisp-treesitter instead of builtin.")
 
 (defgroup scopeline nil
   "Show info about the block at the end of the block."
@@ -62,6 +67,11 @@
     (yaml-mode . ("block_mapping_pair")))
   "Tree-sitter entities for scopeline target.")
 
+(defun scopeline--use-builtin-treesitter ()
+  "Return non-nil if we should use builtin treesitter."
+  (and scopeline--can-use-builtin-treesit
+       (string-suffix-p "-ts-mode" (symbol-name major-mode))))
+
 (defun scopeline--add-overlay (pos text)
   "Add overlay at `POS' with the specified `TEXT'."
   (let ((ov (make-overlay pos pos)))
@@ -79,22 +89,47 @@
     (delete-overlay ov))
   (setq scopeline--overlays '()))
 
+(defun scopeline--get-query-matches (query)
+  "Return list of matches for `QUERY' based on the treesitter lib available."
+  (if (scopeline--use-builtin-treesitter)
+      (let* ((root (treesit-buffer-root-node))
+             (matches (treesit-query-capture root query)))
+        (seq-map (lambda (x)
+                   (cons (treesit-node-start (cdr x))
+                         (treesit-node-end (cdr x))))
+                 matches))
+    (if scopeline--can-use-elisp-treesitter
+        (let* ((query-p (tsc-make-query tree-sitter-language query))
+               (root-node (tsc-root-node tree-sitter-tree))
+               (matches (tsc-query-matches query-p root-node #'tsc--buffer-substring-no-properties)))
+          (seq-map (lambda (x)
+                     (let* ((entity (seq-elt (cdr x) 0))
+                            (pos (tsc-node-byte-range (cdr entity))))
+                       (cons (byte-to-position (car pos)) (byte-to-position (cdr pos)))))
+                   matches))
+      (message "Unable to use builtin treesit or elisp-treesitter"))))
+
+(defun scopeline--get-targets-for-mode (mode)
+  "Return scopeline targets for `MODE'."
+  (cdr (assq
+        (if (scopeline--use-builtin-treesitter)
+            (intern (replace-regexp-in-string "-ts-mode$" "-mode" (symbol-name mode)))
+          mode)
+        scopeline-targets)))
+
 (defun scopeline--show ()
   "Show all the scopeline items in buffer."
-  (when-let* ((scopeline-targets-for-mode (cdr (assq major-mode scopeline-targets)))
-              (query-s (string-join
+  (when-let* ((scopeline-targets-for-mode (scopeline--get-targets-for-mode major-mode))
+              (query (progn
+                       (string-join
                         (seq-map (lambda (ct)
                                    (format "(%s) @entity" ct))
                                  scopeline-targets-for-mode)
-                        "\n"))
-              (query (tsc-make-query tree-sitter-language query-s))
-              (root-node (tsc-root-node tree-sitter-tree))
-              (matches (tsc-query-matches query root-node #'tsc--buffer-substring-no-properties)))
+                        "\n")))
+              (matches (scopeline--get-query-matches query)))
     (seq-map (lambda (x) ; TODO: seq-map might not be the best option here
-               (let* ((entity (seq-elt (cdr x) 0))
-                      (pos (tsc-node-byte-range (cdr entity)))
-                      (start-pos (byte-to-position (car pos)))
-                      (end-pos (byte-to-position (cdr pos)))
+               (let* ((start-pos (car x))
+                      (end-pos (cdr x))
                       (start-line (line-number-at-pos start-pos))
                       (end-line (line-number-at-pos end-pos))
                       (line-difference (- end-line start-line)))
@@ -116,11 +151,15 @@
   "Show scopeline of first line on last line."
   :lighter " scopeline"
   (if scopeline-mode
-      (progn
-        (add-hook 'tree-sitter-after-first-parse-hook #'scopeline--redisplay nil t)
-        (add-hook 'tree-sitter-after-change-functions #'scopeline--redisplay nil t))
+      (if (scopeline--use-builtin-treesitter)
+          (add-hook 'after-change-functions #'scopeline--redisplay nil t)
+        (progn
+          (add-hook 'tree-sitter-after-first-parse-hook #'scopeline--redisplay nil t)
+          (add-hook 'tree-sitter-after-change-functions #'scopeline--redisplay nil t)))
     (progn
-      (remove-hook 'tree-sitter-after-change-functions #'scopeline--redisplay t)
+      (if (scopeline--use-builtin-treesitter)
+          (remove-hook 'after-change-functions #'scopeline--redisplay t)
+        (remove-hook 'tree-sitter-after-change-functions #'scopeline--redisplay t))
       (scopeline--delete-all-overlays))))
 
 (defun scopeline--redisplay (&rest _)
