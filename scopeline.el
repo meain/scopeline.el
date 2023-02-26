@@ -153,9 +153,11 @@
   (if scopeline-mode
       (if (scopeline--use-builtin-treesitter)
           (add-hook 'after-change-functions #'scopeline--redisplay nil t)
-        (progn
-          (add-hook 'tree-sitter-after-first-parse-hook #'scopeline--redisplay nil t)
-          (add-hook 'tree-sitter-after-change-functions #'scopeline--redisplay nil t)))
+        (if scopeline--can-use-elisp-treesitter
+            (progn
+              (add-hook 'tree-sitter-after-first-parse-hook #'scopeline--redisplay nil t)
+              (add-hook 'tree-sitter-after-change-functions #'scopeline--redisplay nil t))
+          (message "Unable to enable scopeline mode, tree-sitter not available.")))
     (progn
       (if (scopeline--use-builtin-treesitter)
           (remove-hook 'after-change-functions #'scopeline--redisplay t)
