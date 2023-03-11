@@ -38,6 +38,19 @@
   "Show info about the block at the end of the block."
   :group 'tools)
 
+;; Ignore warnings from optionally requiring tree-sitter and treesit
+(defvar tree-sitter-language)
+(defvar tree-sitter-tree)
+(declare-function tsc-node-byte-range "tsc" t t)
+(declare-function tsc--buffer-substring-no-properties "tsc")
+(declare-function tsc-query-matches "tsc")
+(declare-function tsc-root-node "tsc" t t)
+(declare-function tsc-make-query "tsc")
+(declare-function treesit-node-end "treesit.c")
+(declare-function treesit-node-start "treesit.c")
+(declare-function treesit-query-capture "treesit.c")
+(declare-function treesit-buffer-root-node "treesit")
+
 (defvar-local scopeline--overlays '() "List to keep overlays applies in buffer.")
 (defvar scopeline-overlay-prefix "  ¤ " "Prefix to use for overlay.")
 (defvar scopeline-min-lines 5 "Minimum number of lines for block before we show scope info.")
