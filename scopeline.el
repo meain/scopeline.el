@@ -52,13 +52,19 @@
 (declare-function treesit-buffer-root-node "treesit")
 
 (defvar-local scopeline--overlays '() "List to keep overlays applies in buffer.")
-(defvar scopeline-overlay-prefix "  ¤ " "Prefix to use for overlay.")
-(defvar scopeline-min-lines 5 "Minimum number of lines for block before we show scope info.")
+(defcustom scopeline-overlay-prefix "  ¤ "
+  "Prefix to use for overlay."
+  :type 'string
+  :group 'scopeline)
+(defcustom scopeline-min-lines 5
+  "Minimum number of lines for block before we show scope info."
+  :type 'integer
+  :group 'scopeline)
 (defface scopeline-face
   '((default :inherit font-lock-comment-face))
   "Face for showing scope info."
-  :group 'blamer)
-(defvar scopeline-targets ;; TODO: Add more language modes
+  :group 'scopeline)
+(defcustom scopeline-targets ;; TODO: Add more language modes
   '(
     ;; TODO: Should this be more complex queries (for example gets
     ;; name of func for func) as it might look weird if only the
@@ -78,7 +84,9 @@
     (rust-mode . ("function_item" "for_expression" "if_expression"))
     (sh-mode . ("function_definition" "if_statement" "while_statement" "for_statement" "case_statement"))
     (yaml-mode . ("block_mapping_pair")))
-  "Tree-sitter entities for scopeline target.")
+  "Tree-sitter entities for scopeline target."
+  :type '(repeat (cons symbol (repeat string)))
+  :group 'scopeline)
 
 (defun scopeline--use-builtin-treesitter ()
   "Return non-nil if we should use builtin treesitter."
