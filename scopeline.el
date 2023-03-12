@@ -29,10 +29,10 @@
 (require 'subr-x)
 (defvar scopeline--can-use-elisp-treesitter
   (require 'tree-sitter nil t)
-  "If non-nil, we are can make use of elisp-treesitter instead of builtin.")
+  "If non-nil, we are can make use of elisp-tree-sitter instead of builtin.")
 (defvar scopeline--can-use-builtin-treesit
   (require 'treesit nil t)
-  "If non-nil, we are can make use of elisp-treesitter instead of builtin.")
+  "If non-nil, we are can make use of builtin treesit instead of elisp-tree-sitter.")
 
 (defgroup scopeline nil
   "Show info about the block at the end of the block."
