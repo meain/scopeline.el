@@ -95,13 +95,16 @@
 
 (defun scopeline--add-overlay (pos text)
   "Add overlay at `POS' with the specified `TEXT'."
+  (dolist (ov (overlays-in pos pos))
+    (when (overlay-get ov 'scopeline)
+      (setq scopeline--overlays (delete ov scopeline--overlays))
+      (delete-overlay ov)))
   (let ((ov (make-overlay pos pos)))
     (overlay-put ov 'after-string
                  (propertize (format "%s%s" scopeline-overlay-prefix text)
                              'face 'scopeline-face))
-    ;; FIXME: If we have overlays at the same point, it does not get
-    ;; added multiple times to the list but does get shown multiple
-    ;; times in the buffer
+    ;; Mark this overlay as belonging to scopeline
+    (overlay-put ov 'scopeline t)
     (add-to-list 'scopeline--overlays ov)))
 
 (defun scopeline--delete-all-overlays ()
