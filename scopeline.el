@@ -80,7 +80,7 @@
     (json-mode . ("pair"))
     (toml-mode . ("pair"))
     (mhtml-mode . ("element"))
-    (nix-mode . ("bind"))
+    (nix-mode . ("binding"))
     (python-mode . ("function_definition" "if_statement" "for_statement"))
     (ruby-mode . ("block" "case" "do_block" "if" "method" "singleton_method" "unless" "class"))
     (rust-mode . ("function_item" "for_expression" "if_expression"))
