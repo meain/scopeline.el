@@ -81,7 +81,7 @@
     (json-mode . ("pair"))
     (toml-mode . ("pair"))
     (mhtml-mode . ("element"))
-    (nix-mode . ("bind"))
+    (nix-mode . ("binding"))
     (python-mode . ("function_definition" "if_statement" "for_statement"))
     (rust-mode . ("function_item" "for_expression" "if_expression"))
     (sh-mode . ("function_definition" "if_statement" "while_statement" "for_statement" "case_statement"))
