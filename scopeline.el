@@ -104,7 +104,8 @@
   (let ((ov (make-overlay pos pos)))
     (overlay-put ov 'after-string
                  (propertize (format "%s%s" scopeline-overlay-prefix text)
-                             'face 'scopeline-face))
+                             'face 'scopeline-face
+                             'cursor t))
     ;; Mark this overlay as belonging to scopeline
     (overlay-put ov 'scopeline t)
     (add-to-list 'scopeline--overlays ov)))
