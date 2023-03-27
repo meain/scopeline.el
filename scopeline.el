@@ -83,7 +83,7 @@
     (mhtml-mode . ("element"))
     (nix-mode . ("bind"))
     (python-mode . ("function_definition" "if_statement" "for_statement"))
-    (ruby-mode . ("block" "case" "do_block" "if" "method" "singleton_method" "unless"))
+    (ruby-mode . ("block" "case" "do_block" "if" "method" "singleton_method" "unless" "class"))
     (rust-mode . ("function_item" "for_expression" "if_expression"))
     (sh-mode . ("function_definition" "if_statement" "while_statement" "for_statement" "case_statement"))
     (yaml-mode . ("block_mapping_pair")))
