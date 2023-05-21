@@ -19,8 +19,7 @@
 ;; Here is a sample `use-package' configuration
 ;;
 ;; (use-package scopeline
-;;   :after tree-sitter
-;;   :config (add-hook 'tree-sitter-mode-hook #'scopeline-mode))
+;;   :config (add-hook 'prog-mode-hook #'scopeline-mode))
 ;;
 ;; You can find more info in the README for the project at
 ;; https://github.com/meain/scopeline.el

@@ -16,16 +16,10 @@ can use to enable or disable the functionality.
 
 To enable scopeline, you just have to call `scopeline-mode`.
 
-Here is a sample `use-package` configuration to use it with `elisp-tree-sitter`:
-
 ```emacs-lisp
 (use-package scopeline
-  :after tree-sitter
-  :config (add-hook 'tree-sitter-mode-hook #'scopeline-mode))
+  :config (add-hook 'prog-mode-hook #'scopeline-mode))
 ```
-
-When using with `treesit`, you can hook onto language specific modes.
-
 ## Configuration
 
 - `scopeline-overlay-prefix`: Change this to another string to change
