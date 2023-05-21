@@ -117,6 +117,16 @@
     (delete-overlay ov))
   (setq scopeline--overlays '()))
 
+(defun scopeline-delete-all-overlays ()
+  "Delete all overlays created by scopeline.
+You should not ideally have to use it.  This is only in case something
+bad happens and scopeline leaves around unnecessary overlays."
+  (interactive)
+  (let ((overlays (overlays-in (point-min) (point-max))))
+    (dolist (ov overlays)
+      (when (overlay-get ov 'scopeline)
+        (delete-overlay ov)))))
+
 (defun scopeline--get-query-matches (query)
   "Return list of matches for `QUERY' based on the treesitter lib available."
   (if (scopeline--use-builtin-treesitter)
