@@ -3,7 +3,7 @@
 ;; URL: https://github.com/meain/scopeline.el
 ;; Keywords: scope, context, tree-sitter, convenience
 ;; SPDX-License-Identifier: Apache-2.0
-;; Package-Requires: ((emacs "26.1"))
+;; Package-Requires: ((emacs "29.1"))
 ;; Version: 0.1
 
 ;;; Commentary:
