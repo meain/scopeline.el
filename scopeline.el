@@ -69,6 +69,7 @@
     ;; name of func for func) as it might look weird if only the
     ;; return type is on the first line in case of c-mode entries
     (c-mode . ("function_definition" "for_statement" "if_statement" "while_statement"))
+    (c++-mode . ("function_definition" "for_statement" "if_statement" "while_statement" "class_specifier" "struct_specifier"))
     (css-mode . ("rule_set"))
     (go-mode . ("function_declaration" "func_literal" "method_declaration" "if_statement" "for_statement" "type_declaration"))
     (html-mode . ("element"))
