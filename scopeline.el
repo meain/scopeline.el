@@ -190,8 +190,8 @@ bad happens and scopeline leaves around unnecessary overlays."
   (if scopeline-mode
       (if (scopeline--use-builtin-treesitter)
           (progn
-           (run-at-time "3 seconds" nil #'scopeline--redisplay) ;; HACK: Assuming tree will be parsed by then
-           (add-hook 'after-change-functions #'scopeline--redisplay nil t))
+            (run-at-time "3 seconds" nil #'scopeline--redisplay) ;; HACK: Assuming tree will be parsed by then
+            (add-hook 'after-change-functions #'scopeline--redisplay nil t))
         (if scopeline--can-use-elisp-treesitter
             (progn
               (add-hook 'tree-sitter-after-first-parse-hook #'scopeline--redisplay nil t)
@@ -206,8 +206,8 @@ bad happens and scopeline leaves around unnecessary overlays."
 (defun scopeline--redisplay (&rest _)
   "Re-display all the scopeline entries."
   (when scopeline-mode ;; In case scopeline-mode was disabled in the meantime
-   (scopeline--delete-all-overlays)
-   (scopeline--show)))
+    (scopeline--delete-all-overlays)
+    (scopeline--show)))
 
 (provide 'scopeline)
 ;;; scopeline.el ends here
